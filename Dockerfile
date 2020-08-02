@@ -1,14 +1,17 @@
 ARG CUDA_VERSION=11.0
 
-FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu20.04 as build
+FROM nvidia/cuda:${CUDA_VERSION}-cudnn8-devel-ubuntu18.04 as build
 WORKDIR /opt
-ENV TZ "America/New_York"
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        wget ca-certificates cmake g++ build-essential libssl-dev \
+        wget ca-certificates g++ build-essential libssl-dev \
         zlib1g-dev libzip-dev libboost-filesystem-dev \
         libgoogle-perftools-dev
+
+ARG CMAKE_VERSION=3.17.3
+RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
+    tar xf cmake-${CMAKE_VERSION}.tar.gz && \
+    cd cmake-$CMAKE_VERSION && \
+    ./bootstrap && make && make install
 
 ARG VERSION=1.4.5
 ENV LD_LIBRARY_PATH /usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
@@ -18,7 +21,7 @@ RUN wget -q https://github.com/lightvector/KataGo/archive/v${VERSION}.tar.gz && 
     cmake . -DUSE_BACKEND=CUDA -DNO_GIT_REVISION=1 && \
     make
 
-FROM nvidia/cuda:${CUDA_VERSION}-runtime-ubuntu20.04
+FROM nvidia/cuda:${CUDA_VERSION}-cudnn8-runtime-ubuntu18.04
 WORKDIR /opt
 COPY --from=build /opt/KataGo-$VERSION/cpp/katago /opt/katago
 
