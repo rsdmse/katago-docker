@@ -1,6 +1,6 @@
 ARG CUDA_VERSION=11.0
 
-FROM nvidia/cuda:${CUDA_VERSION}-cudnn7-devel-ubuntu20.04 as build
+FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu20.04 as build
 WORKDIR /opt
 RUN apt-get update && apt-get install -y --no-install-recommends \
         wget ca-certificates g++ build-essential libssl-dev \
@@ -15,9 +15,8 @@ RUN wget -q https://github.com/lightvector/KataGo/archive/v${VERSION}.tar.gz && 
     cmake . -DUSE_BACKEND=CUDA -DNO_GIT_REVISION=1 && \
     make
 
-FROM nvidia/cuda:${CUDA_VERSION}-cudnn7-runtime-ubuntu18.04
+FROM nvidia/cuda:${CUDA_VERSION}-runtime-ubuntu20.04
 WORKDIR /opt
-ARG VERSION=1.4.5
 COPY --from=build /opt/KataGo-$VERSION/cpp/katago /opt/katago
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
