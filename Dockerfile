@@ -7,18 +7,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zlib1g-dev libzip-dev libboost-filesystem-dev \
         libgoogle-perftools-dev
 
-ARG CMAKE_VERSION=3.17.3
-RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
-    tar xf cmake-${CMAKE_VERSION}.tar.gz && \
-    cd cmake-$CMAKE_VERSION && \
-    ./bootstrap && make && make install
+ARG CMAKE_VERSION=3.18.1
+RUN wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz && \
+    tar xf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz
 
 ARG VERSION=1.4.5
 ENV LD_LIBRARY_PATH /usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
 RUN wget -q https://github.com/lightvector/KataGo/archive/v${VERSION}.tar.gz && \
     tar xf v${VERSION}.tar.gz && \
     cd KataGo-$VERSION/cpp && \
-    cmake . -DUSE_BACKEND=CUDA -DNO_GIT_REVISION=1 && \
+    /opt/cmake-3.18.1-Linux-x86_64/bin/cmake . -DUSE_BACKEND=CUDA -DNO_GIT_REVISION=1 && \
     make
 
 FROM nvidia/cuda:${CUDA_VERSION}-cudnn8-runtime-ubuntu18.04
