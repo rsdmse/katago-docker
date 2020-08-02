@@ -3,7 +3,7 @@ ARG CUDA_VERSION=11.0
 FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu20.04 as build
 WORKDIR /opt
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        wget ca-certificates g++ build-essential libssl-dev \
+        wget ca-certificates cmake g++ build-essential libssl-dev \
         zlib1g-dev libzip-dev libboost-filesystem-dev \
         libgoogle-perftools-dev
 
