@@ -1,16 +1,11 @@
-ARG CUDA_VERSION=10.2
-FROM nvidia/cuda:${CUDA_VERSION}-cudnn7-devel-ubuntu18.04 as build
+ARG CUDA_VERSION=11.0
+
+FROM nvidia/cuda:${CUDA_VERSION}-cudnn7-devel-ubuntu20.04 as build
 WORKDIR /opt
 RUN apt-get update && apt-get install -y --no-install-recommends \
         wget ca-certificates g++ build-essential libssl-dev \
         zlib1g-dev libzip-dev libboost-filesystem-dev \
         libgoogle-perftools-dev
-
-ARG CMAKE_VERSION=3.17.3
-RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
-    tar xf cmake-${CMAKE_VERSION}.tar.gz && \
-    cd cmake-$CMAKE_VERSION && \
-    ./bootstrap && make && make install
 
 ARG VERSION=1.4.5
 ENV LD_LIBRARY_PATH /usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
