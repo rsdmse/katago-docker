@@ -1,4 +1,4 @@
-ARG CUDA_VERSION=10.1
+ARG CUDA_VERSION=10.2
 FROM nvidia/cuda:${CUDA_VERSION}-cudnn7-devel-ubuntu18.04 as build
 WORKDIR /opt
 RUN apt-get update && apt-get install -y --no-install-recommends \
